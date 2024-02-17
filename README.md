@@ -52,7 +52,7 @@ INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (2, 80000, 0, 1);
 INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (3, 1000000, 0, 1);
 INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (4, 10000000, 0, 1);
 INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (5, 500000, 0, 1);
-```, version
+```
 
 ### Select
 
