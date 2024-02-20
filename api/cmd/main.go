@@ -1,7 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"github.com/fernandosvrosa/rinha-backend/api/infra"
+	"github.com/gocql/gocql"
+	"github.com/gofiber/fiber/v2"
+	"log"
+)
 
 func main() {
-	fmt.Println("Hello, World!")
+
+	cluster := gocql.NewCluster("127.0.0.1")
+	cluster.Keyspace = "rinha_db"
+
+	// Create a session
+	session, err := cluster.CreateSession()
+	if err != nil {
+		log.Fatal("Error creating session:", err)
+	}
+	defer session.Close()
+
+	app := fiber.New()
+
+	clientFactory := infra.NewClientFactory(session)
+	clientHandler := clientFactory.CreateClientHandler()
+
+	app.Post("/clientes/:id/transacoes", clientHandler.CreateTransaction)
+
+	log.Fatal(app.Listen(":3000"))
 }

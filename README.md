@@ -27,6 +27,8 @@ docker exec -it scylla-node1 cqlsh
 ### Keyspace
 
 ```sql
+DROP KEYSPACE rinha_db;
+
 CREATE KEYSPACE rinha_db
 WITH replication = {'class': 'SimpleStrategy', 'replication_factor': 3};
        
@@ -42,6 +44,7 @@ CREATE TABLE conta (
     version INT,
     primary key (id)                   
 );
+
 ```
 
 ### Insert
@@ -61,3 +64,10 @@ SELECT * FROM conta where id = 1;
 
 SELECT * FROM conta;
 ```
+
+
+## Api
+
+- [] config fiber rota clientes transacoes 
+- [] Usecase clientes transacoes 
+- [] Repository clientes transacoes scyllaDB

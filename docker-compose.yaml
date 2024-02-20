@@ -5,6 +5,10 @@ services:
     image: scylladb/scylla
     restart: always
     container_name: scylla-node1
+    ports:
+      - "9042:9042" # CQL native transport
+      - "10000:10000" # Prometheus metrics
+      - "9180:9180" # Internode HTTP communication
     command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 150M --overprovisioned 1 --api-address 0.0.0.0
     networks:
       scylla-net:
@@ -13,6 +17,10 @@ services:
     image: scylladb/scylla
     restart: always
     container_name: scylla-node2
+    ports:
+      - "9043:9042" # CQL native transport
+      - "10001:10000" # Prometheus metrics
+      - "9181:9180" # Internode HTTP communication
     command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 150M --overprovisioned 1 --api-address 0.0.0.0
     networks:
       scylla-net:
