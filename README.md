@@ -68,6 +68,6 @@ SELECT * FROM conta;
 
 ## Api
 
-- [] config fiber rota clientes transacoes 
-- [] Usecase clientes transacoes 
-- [] Repository clientes transacoes scyllaDB
+- [x] config fiber rota clientes transacoes 
+- [x] Usecase clientes transacoes 
+- [x] Repository clientes transacoes scyllaDB
