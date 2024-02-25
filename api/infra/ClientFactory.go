@@ -20,6 +20,8 @@ func NewClientFactory(session *gocql.Session) *ClientFactory {
 func (cf *ClientFactory) CreateClientHandler() *client.ClientHandler {
 	findClientAdapter := adapter.NewFindClientAdapter(cf.session)
 	updateAmountClientAdapter := adapter.NewUpdateAmountClientAdapter(cf.session)
-	createTransactionUseCase := domain.NewCreateTransactionUsecase(findClientAdapter, updateAmountClientAdapter)
+	contaLockAdapter := adapter.NewContaLockAdapter(cf.session)
+	contaUnLockAdapter := adapter.NewContaUnLockAdapter(cf.session)
+	createTransactionUseCase := domain.NewCreateTransactionUsecase(findClientAdapter, updateAmountClientAdapter, contaLockAdapter, contaUnLockAdapter)
 	return client.NewClientHandler(createTransactionUseCase)
 }

@@ -9,13 +9,33 @@ import (
 type CreateTransactionUsecase struct {
 	findClientPort         port.FindClientPort
 	updateAmountClientPort port.UpdateAmountClientPort
+	contaLockPort          port.ContaLockPort
+	contaUnLockPort        port.ContaUnLockPort
 }
 
-func NewCreateTransactionUsecase(findClientPort port.FindClientPort, updateAmountClientPort port.UpdateAmountClientPort) *CreateTransactionUsecase {
-	return &CreateTransactionUsecase{findClientPort: findClientPort, updateAmountClientPort: updateAmountClientPort}
+func NewCreateTransactionUsecase(
+	findClientPort port.FindClientPort,
+	updateAmountClientPort port.UpdateAmountClientPort,
+	contaLockPort port.ContaLockPort,
+	contaUnLockPort port.ContaUnLockPort,
+) *CreateTransactionUsecase {
+	return &CreateTransactionUsecase{
+		findClientPort:         findClientPort,
+		updateAmountClientPort: updateAmountClientPort,
+		contaLockPort:          contaLockPort,
+		contaUnLockPort:        contaUnLockPort}
 }
 
 func (c *CreateTransactionUsecase) Execute(transaction entity.Transaction) (entity.Balance, error) {
+	applied, err := c.contaLockPort.Execute(transaction.ClientID)
+	if err != nil {
+		return entity.Balance{}, err
+	}
+
+	if !applied {
+		c.Execute(transaction)
+	}
+	defer c.contaUnLockPort.Execute(transaction.ClientID)
 
 	client, err := c.findClientPort.Execute(transaction.ClientID)
 
@@ -48,8 +68,10 @@ func balanceAction(client entity.Client, transaction entity.Transaction) (entity
 		client.Amount -= transaction.Value
 	}
 
-	if client.Limit < client.Amount {
-		return entity.Client{}, appError.InsufficientFund{Message: "Insufficient fund."}
+	if client.Amount < 0 {
+		if client.Limit < -client.Amount {
+			return entity.Client{}, appError.InsufficientFund{Message: "Insufficient fund."}
+		}
 	}
 
 	return client, nil

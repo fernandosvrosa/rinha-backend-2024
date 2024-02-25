@@ -37,6 +37,13 @@ USE rinha_db;
 ### Table
 
 ```sql
+
+CREATE TABLE conta_lock (
+   id INT,
+   time TIMESTAMP,
+   primary key (id)
+) WITH default_time_to_live = 6000;
+
 CREATE TABLE conta (
     id INT,
     limite INT,
@@ -55,9 +62,12 @@ INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (2, 80000, 0, 1);
 INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (3, 1000000, 0, 1);
 INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (4, 10000000, 0, 1);
 INSERT INTO conta (id, limite, saldo_inicial, version) VALUES (5, 500000, 0, 1);
+
+
+INSERT INTO conta_lock (id, time) VALUES (1, toTimestamp(now())) IF NOT EXISTS; 
 ```
 
-### Select
+### Select*
 
 ```sql
 SELECT * FROM conta where id = 1;
