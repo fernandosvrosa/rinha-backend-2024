@@ -42,7 +42,7 @@ CREATE TABLE conta_lock (
    id INT,
    time TIMESTAMP,
    primary key (id)
-) WITH default_time_to_live = 6000;
+) WITH default_time_to_live = 3;
 
 CREATE TABLE conta (
     id INT,
