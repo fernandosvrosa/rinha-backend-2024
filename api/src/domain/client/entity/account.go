@@ -1,6 +1,6 @@
 package entity
 
-type Client struct {
+type Account struct {
 	ID      int
 	Limit   int64
 	Amount  int64

@@ -38,19 +38,29 @@ USE rinha_db;
 
 ```sql
 
-CREATE TABLE conta_lock (
+CREATE TABLE IF NOT EXISTS conta_lock (
    id INT,
    time TIMESTAMP,
    primary key (id)
 ) WITH default_time_to_live = 3;
 
-CREATE TABLE conta (
+CREATE TABLE IF NOT EXISTS conta (
     id INT,
     limite INT,
     saldo_inicial INT,
     version INT,
     primary key (id)                   
 );
+
+CREATE TABLE IF NOT EXISTS transaction_history (
+    id UUID,
+    account_id INT,
+    amount INT,
+    type TEXT,
+    description TEXT,
+    created_at TIMESTAMP,
+    primary key ((account_id), id, created_at)
+) WITH CLUSTERING ORDER BY (id DESC, created_at DESC);
 
 ```
 

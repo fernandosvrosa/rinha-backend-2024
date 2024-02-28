@@ -55,6 +55,8 @@ func (ch *ClientHandler) CreateTransaction(c *fiber.Ctx) error {
 		switch err.(type) {
 		case appError.InsufficientFund:
 			return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		case appError.NotFound:
+			return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
 		default:
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}

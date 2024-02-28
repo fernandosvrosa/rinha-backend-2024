@@ -5,19 +5,19 @@ import (
 	"github.com/gocql/gocql"
 )
 
-type FindClientAdapter struct {
+type FindAccountAdapter struct {
 	session *gocql.Session
 }
 
-func NewFindClientAdapter(session *gocql.Session) *FindClientAdapter {
-	return &FindClientAdapter{session: session}
+func NewFindAccountAdapter(session *gocql.Session) *FindAccountAdapter {
+	return &FindAccountAdapter{session: session}
 }
 
-func (f FindClientAdapter) Execute(clientID int) (entity.Client, error) {
-	client := entity.Client{}
+func (f FindAccountAdapter) Execute(clientID int) (entity.Account, error) {
+	client := entity.Account{}
 
 	if err := f.session.Query("SELECT id, limite, saldo_inicial, version FROM conta WHERE id = ?", clientID).Scan(&client.ID, &client.Limit, &client.Amount, &client.Version); err != nil {
-		return entity.Client{}, err
+		return entity.Account{}, err
 	}
 
 	return client, nil

@@ -4,26 +4,31 @@ import (
 	"github.com/fernandosvrosa/rinha-backend/api/src/domain/client/entity"
 	appError "github.com/fernandosvrosa/rinha-backend/api/src/domain/client/error"
 	"github.com/fernandosvrosa/rinha-backend/api/src/domain/client/port"
+	"time"
 )
 
 type CreateTransactionUsecase struct {
-	findClientPort         port.FindClientPort
-	updateAmountClientPort port.UpdateAmountClientPort
-	contaLockPort          port.ContaLockPort
-	contaUnLockPort        port.ContaUnLockPort
+	findAccountPort            port.FindAccountPort
+	updateAmountClientPort     port.UpdateAmountClientPort
+	contaLockPort              port.ContaLockPort
+	contaUnLockPort            port.ContaUnLockPort
+	saveTransactionHistoryPort port.SaveTransactionHistoryPort
 }
 
 func NewCreateTransactionUsecase(
-	findClientPort port.FindClientPort,
+	findAccountPort port.FindAccountPort,
 	updateAmountClientPort port.UpdateAmountClientPort,
 	contaLockPort port.ContaLockPort,
 	contaUnLockPort port.ContaUnLockPort,
+	saveTransactionHistoryPort port.SaveTransactionHistoryPort,
 ) *CreateTransactionUsecase {
 	return &CreateTransactionUsecase{
-		findClientPort:         findClientPort,
-		updateAmountClientPort: updateAmountClientPort,
-		contaLockPort:          contaLockPort,
-		contaUnLockPort:        contaUnLockPort}
+		findAccountPort:            findAccountPort,
+		updateAmountClientPort:     updateAmountClientPort,
+		contaLockPort:              contaLockPort,
+		contaUnLockPort:            contaUnLockPort,
+		saveTransactionHistoryPort: saveTransactionHistoryPort,
+	}
 }
 
 func (c *CreateTransactionUsecase) Execute(transaction entity.Transaction) (entity.Balance, error) {
@@ -37,31 +42,49 @@ func (c *CreateTransactionUsecase) Execute(transaction entity.Transaction) (enti
 	}
 	defer c.contaUnLockPort.Execute(transaction.ClientID)
 
-	client, err := c.findClientPort.Execute(transaction.ClientID)
+	account, err := c.findAccountPort.Execute(transaction.ClientID)
+
+	if err != nil {
+		if err.Error() == "not found" {
+			return entity.Balance{}, appError.NotFound{Message: "Account not found."}
+
+		}
+		return entity.Balance{}, err
+	}
+
+	account, err = balanceAction(account, transaction)
 
 	if err != nil {
 		return entity.Balance{}, err
 	}
 
-	client, err = balanceAction(client, transaction)
+	account, err = c.updateAmountClientPort.Execute(account)
 
 	if err != nil {
 		return entity.Balance{}, err
 	}
 
-	client, err = c.updateAmountClientPort.Execute(client)
+	transactionHistory := entity.TransactionHistory{
+		AccountId:   account.ID,
+		CreatedAt:   time.Now(),
+		Amount:      transaction.Value,
+		Description: transaction.Description,
+		Type:        transaction.TransactionType,
+	}
+
+	_, err = c.saveTransactionHistoryPort.Execute(transactionHistory)
 
 	if err != nil {
 		return entity.Balance{}, err
 	}
 
 	return entity.Balance{
-		Amount: client.Amount,
-		Limit:  client.Limit,
+		Amount: account.Amount,
+		Limit:  account.Limit,
 	}, nil
 }
 
-func balanceAction(client entity.Client, transaction entity.Transaction) (entity.Client, error) {
+func balanceAction(client entity.Account, transaction entity.Transaction) (entity.Account, error) {
 	if transaction.TransactionType == "c" {
 		client.Amount += transaction.Value
 	} else {
@@ -70,7 +93,7 @@ func balanceAction(client entity.Client, transaction entity.Transaction) (entity
 
 	if client.Amount < 0 {
 		if client.Limit < -client.Amount {
-			return entity.Client{}, appError.InsufficientFund{Message: "Insufficient fund."}
+			return entity.Account{}, appError.InsufficientFund{Message: "Insufficient fund."}
 		}
 	}
 

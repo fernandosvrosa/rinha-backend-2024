@@ -13,10 +13,10 @@ func NewUpdateAmountClientAdapter(session *gocql.Session) *UpdateAmountClientAda
 	return &UpdateAmountClientAdapter{session: session}
 }
 
-func (u UpdateAmountClientAdapter) Execute(client entity.Client) (entity.Client, error) {
+func (u UpdateAmountClientAdapter) Execute(client entity.Account) (entity.Account, error) {
 	newVersion := client.Version + 1
 	if err := u.session.Query("UPDATE conta SET saldo_inicial = ?, version = ? WHERE id = ?;", client.Amount, newVersion, client.ID).Exec(); err != nil {
-		return entity.Client{}, err
+		return entity.Account{}, err
 	}
 	return client, nil
 }
