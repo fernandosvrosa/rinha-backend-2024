@@ -1,7 +1,6 @@
 package client
 
 import (
-	"fmt"
 	"github.com/fernandosvrosa/rinha-backend/api/src/domain/client"
 	appError "github.com/fernandosvrosa/rinha-backend/api/src/domain/client/error"
 	"github.com/gofiber/fiber/v2"
@@ -62,8 +61,6 @@ func (t *TransactionHistoryHandler) FindTransactionHistory(c *fiber.Ctx) error {
 		}
 	}
 
-	fmt.Println("account: ", account)
-
 	transactionsHistory, err := t.findTransactionHistoryUsecase.Execute(id)
 
 	if err != nil {
@@ -74,8 +71,6 @@ func (t *TransactionHistoryHandler) FindTransactionHistory(c *fiber.Ctx) error {
 			return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 		}
 	}
-
-	fmt.Println("transactionsHistory: ", transactionsHistory)
 
 	accountResponse := Account{
 		Amount: account.Amount,
