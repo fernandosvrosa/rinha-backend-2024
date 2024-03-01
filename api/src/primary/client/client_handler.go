@@ -24,7 +24,7 @@ type (
 		Description     string `json:"descricao"`
 	}
 
-	Response struct {
+	ClientResponse struct {
 		Limit  int64 `json:"limite"`
 		Amount int64 `json:"saldo"`
 	}
@@ -62,7 +62,7 @@ func (ch *ClientHandler) CreateTransaction(c *fiber.Ctx) error {
 		}
 	}
 
-	err = c.Status(http.StatusOK).JSON(Response{
+	err = c.Status(http.StatusOK).JSON(ClientResponse{
 		Limit:  balance.Limit,
 		Amount: balance.Amount,
 	})

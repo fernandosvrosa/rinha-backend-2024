@@ -24,7 +24,11 @@ func main() {
 	clientFactory := infra.NewClientFactory(session)
 	clientHandler := clientFactory.CreateClientHandler()
 
+	transactionHistoryFactory := infra.NewTransactionHistoryFactory(session)
+	transactionHistoryHandler := transactionHistoryFactory.CreateTransactionHistoryHandler()
+
 	app.Post("/clientes/:id/transacoes", clientHandler.CreateTransaction)
+	app.Get("/clientes/:id/extrato", transactionHistoryHandler.FindTransactionHistory)
 
 	log.Fatal(app.Listen(":3000"))
 }
