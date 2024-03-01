@@ -91,3 +91,8 @@ SELECT * FROM conta;
 - [x] config fiber rota clientes transacoes 
 - [x] Usecase clientes transacoes 
 - [x] Repository clientes transacoes scyllaDB
+- [x] Repository extrato e api
+- [ ] github actions docker
+- [ ] implementar traefik loadbalecer
+- [ ] testar a aplicacao com gattling
+- [ ] entregar o projeto para rinha
