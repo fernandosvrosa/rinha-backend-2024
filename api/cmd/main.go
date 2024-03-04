@@ -4,12 +4,20 @@ import (
 	"github.com/fernandosvrosa/rinha-backend/api/infra"
 	"github.com/gocql/gocql"
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"log"
+	"os"
 )
 
 func main() {
 
-	cluster := gocql.NewCluster("127.0.0.1")
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("No .env file found", err)
+	}
+
+	dbHost := os.Getenv("DB_HOST")
+
+	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = "rinha_db"
 
 	// Create a session
