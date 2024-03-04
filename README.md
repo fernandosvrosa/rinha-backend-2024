@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS conta_lock (
    id INT,
    time TIMESTAMP,
    primary key (id)
-) WITH default_time_to_live = 3;
+) WITH default_time_to_live = 6000;
 
 CREATE TABLE IF NOT EXISTS conta (
     id INT,
