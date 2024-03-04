@@ -93,7 +93,7 @@ SELECT * FROM conta;
 - [x] Repository clientes transacoes scyllaDB
 - [x] Repository extrato e api
 - [x] github actions docker
-- [ ] env docker para banco
-- [ ] implementar traefik loadbalecer
+- [x] env docker para banco
+- [x] implementar traefik loadbalecer
 - [ ] testar a aplicacao com gattling
 - [ ] entregar o projeto para rinha

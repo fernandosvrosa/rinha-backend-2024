@@ -1,10 +1,12 @@
 package client
 
 import (
+	"fmt"
 	"github.com/fernandosvrosa/rinha-backend/api/src/domain/client"
 	appError "github.com/fernandosvrosa/rinha-backend/api/src/domain/client/error"
 	"github.com/gofiber/fiber/v2"
 	"net/http"
+	"os"
 	"strconv"
 	"time"
 )
@@ -45,6 +47,8 @@ type (
 )
 
 func (t *TransactionHistoryHandler) FindTransactionHistory(c *fiber.Ctx) error {
+	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>> NAME:", os.Getenv("NAME"))
+
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api1:
-    image: fernandosvrosa/rinha:bb20917478c21b8ffe2da637d8ab877e8b43a643
+    image: fernandosvrosa/rinha:338bd3b11d55d9db1658b6bfeffe0429a8cf506a
     container_name: rinha1
     restart: always
     ports:
@@ -20,7 +20,7 @@ services:
       scylla-net:
 
   api2:
-    image: fernandosvrosa/rinha:bb20917478c21b8ffe2da637d8ab877e8b43a643
+    image: fernandosvrosa/rinha:338bd3b11d55d9db1658b6bfeffe0429a8cf506a
     container_name: rinha2
     restart: always
     ports:

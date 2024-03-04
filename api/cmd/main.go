@@ -17,9 +17,6 @@ func main() {
 	}
 
 	dbHost := os.Getenv("DB_HOST")
-	name := os.Getenv("NAME")
-
-	fmt.Println(">>>>>>>>>>>>>>>>>>>>>>>>>>>> NAME:", name)
 
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = "rinha_db"
