@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 type ClientHandler struct {
@@ -35,7 +36,7 @@ func (ch *ClientHandler) CreateTransaction(c *fiber.Ctx) error {
 	fmt.Println("CreateTransaction")
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	request := &Resquest{}
@@ -48,7 +49,7 @@ func (ch *ClientHandler) CreateTransaction(c *fiber.Ctx) error {
 		entity.Transaction{
 			ClientID:        id,
 			Value:           request.Value,
-			TransactionType: request.TransactionType,
+			TransactionType: strings.ToLower(request.TransactionType),
 			Description:     request.Description,
 		})
 

@@ -49,7 +49,7 @@ func (t *TransactionHistoryHandler) FindTransactionHistory(c *fiber.Ctx) error {
 	fmt.Println("FindTransactionHistory")
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
 	}
 
 	account, err := t.findAccountByIdUsecase.Execute(id)

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api1:
-    image: fernandosvrosa/rinha:faeba1ce845754aa93e40dc3dbc48371ec7f4941
+    image: fernandosvrosa/rinha:3723a1b16280dfac5054c6d913fc99a05588f61a
     container_name: rinha1
     restart: always
     environment:
@@ -23,7 +23,7 @@ services:
           memory: "50MB"
 
   api2:
-    image: fernandosvrosa/rinha:faeba1ce845754aa93e40dc3dbc48371ec7f4941
+    image: fernandosvrosa/rinha:3723a1b16280dfac5054c6d913fc99a05588f61a
     container_name: rinha2
     restart: always
     environment:
