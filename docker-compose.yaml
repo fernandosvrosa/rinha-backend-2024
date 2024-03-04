@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api1:
-    image: fernandosvrosa/rinha:673aaeceb312ca2576e6e91e8bdaa4781ebf1de1
+    image: fernandosvrosa/rinha:8fbe689f85027de6a393d122dc13ddb91d987abb
     container_name: rinha1
     restart: always
     environment:
@@ -23,7 +23,7 @@ services:
           memory: "50MB"
 
   api2:
-    image: fernandosvrosa/rinha:673aaeceb312ca2576e6e91e8bdaa4781ebf1de1
+    image: fernandosvrosa/rinha:8fbe689f85027de6a393d122dc13ddb91d987abb
     container_name: rinha2
     restart: always
     environment:
@@ -60,6 +60,9 @@ services:
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml
     networks:
       scylla-net:
+    depends_on:
+      - api1
+      - api2
     deploy:
       resources:
         limits:

@@ -1,6 +1,7 @@
 package client
 
 import (
+	"fmt"
 	"github.com/fernandosvrosa/rinha-backend/api/src/domain/client"
 	"github.com/fernandosvrosa/rinha-backend/api/src/domain/client/entity"
 	appError "github.com/fernandosvrosa/rinha-backend/api/src/domain/client/error"
@@ -31,6 +32,7 @@ type (
 )
 
 func (ch *ClientHandler) CreateTransaction(c *fiber.Ctx) error {
+	fmt.Println("CreateTransaction")
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(http.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
