@@ -2,11 +2,9 @@ version: "3"
 
 services:
   api1:
-    image: fernandosvrosa/rinha:338bd3b11d55d9db1658b6bfeffe0429a8cf506a
+    image: fernandosvrosa/rinha:673aaeceb312ca2576e6e91e8bdaa4781ebf1de1
     container_name: rinha1
     restart: always
-    ports:
-      - "3000:3000"
     environment:
       - DB_HOST=scylla-node1:9042
       - NAME=rinha1
@@ -18,13 +16,16 @@ services:
         - "traefik.http.services.rinha1.loadbalancer.server.port=3000"
     networks:
       scylla-net:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "50MB"
 
   api2:
-    image: fernandosvrosa/rinha:338bd3b11d55d9db1658b6bfeffe0429a8cf506a
+    image: fernandosvrosa/rinha:673aaeceb312ca2576e6e91e8bdaa4781ebf1de1
     container_name: rinha2
     restart: always
-    ports:
-      - "3001:3000"
     environment:
       - DB_HOST=scylla-node1:9042
       - NAME=rinha2
@@ -33,13 +34,19 @@ services:
     labels:
         - "traefik.enable=true"
         - "traefik.http.routers.rinha2.rule=Host(`localhost`)"
-        - "traefik.http.services.rinha2.loadbalancer.server.port=3001"
+        - "traefik.http.services.rinha2.loadbalancer.server.port=3000"
     networks:
       scylla-net:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "50MB"
 
   traefik:
     image: traefik:v2.2
     container_name: traefik
+    restart: always
     command:
       - "--api.insecure=true"
       - "--providers.docker=true"
@@ -48,12 +55,16 @@ services:
       - "--providers.file.directory=/etc/traefik/dynamic"
     ports:
       - "9999:80"
-      - "8080:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./traefik/traefik.yml:/etc/traefik/traefik.yml
     networks:
       scylla-net:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "50MB"
 
 
   scylla-node1:
@@ -64,9 +75,14 @@ services:
       - "9042:9042" # CQL native transport
       - "10000:10000" # Prometheus metrics
       - "9180:9180" # Internode HTTP communication
-    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 150M --overprovisioned 1 --api-address 0.0.0.0
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 200M --overprovisioned 1 --api-address 0.0.0.0
     networks:
       scylla-net:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "200MB"
 
   scylla-node2:
     image: scylladb/scylla
@@ -76,9 +92,14 @@ services:
       - "9043:9042" # CQL native transport
       - "10001:10000" # Prometheus metrics
       - "9181:9180" # Internode HTTP communication
-    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 150M --overprovisioned 1 --api-address 0.0.0.0
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 200M --overprovisioned 1 --api-address 0.0.0.0
     networks:
       scylla-net:
+    deploy:
+      resources:
+        limits:
+          cpus: "0.3"
+          memory: "200MB"
 
 networks:
     scylla-net:
