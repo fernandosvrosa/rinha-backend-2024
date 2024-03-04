@@ -40,7 +40,7 @@ func (ch *ClientHandler) CreateTransaction(c *fiber.Ctx) error {
 
 	request := &Resquest{}
 	if err := c.BodyParser(request); err != nil {
-		c.Status(400).JSON(fiber.Map{"error": err.Error()})
+		c.Status(500).JSON(fiber.Map{"error": err.Error()})
 		return nil
 	}
 

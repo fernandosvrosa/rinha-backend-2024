@@ -85,7 +85,7 @@ func (c *CreateTransactionUsecase) Execute(transaction entity.Transaction) (enti
 }
 
 func balanceAction(client entity.Account, transaction entity.Transaction) (entity.Account, error) {
-	if transaction.TransactionType == "c" {
+	if transaction.TransactionType == "d" {
 		client.Amount += transaction.Value
 	} else {
 		client.Amount -= transaction.Value

@@ -2,7 +2,7 @@ version: "3"
 
 services:
   api1:
-    image: fernandosvrosa/rinha:8fbe689f85027de6a393d122dc13ddb91d987abb
+    image: fernandosvrosa/rinha:faeba1ce845754aa93e40dc3dbc48371ec7f4941
     container_name: rinha1
     restart: always
     environment:
@@ -11,9 +11,9 @@ services:
     depends_on:
       - scylla-node1
     labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.rinha1.rule=Host(`localhost`)"
-        - "traefik.http.services.rinha1.loadbalancer.server.port=3000"
+      - "traefik.enable=true"
+      - "traefik.http.routers.rinha.rule=Host(`localhost`)"
+      - "traefik.http.services.rinha.loadbalancer.server.port=3000"
     networks:
       scylla-net:
     deploy:
@@ -23,7 +23,7 @@ services:
           memory: "50MB"
 
   api2:
-    image: fernandosvrosa/rinha:8fbe689f85027de6a393d122dc13ddb91d987abb
+    image: fernandosvrosa/rinha:faeba1ce845754aa93e40dc3dbc48371ec7f4941
     container_name: rinha2
     restart: always
     environment:
@@ -32,9 +32,9 @@ services:
     depends_on:
       - scylla-node1
     labels:
-        - "traefik.enable=true"
-        - "traefik.http.routers.rinha2.rule=Host(`localhost`)"
-        - "traefik.http.services.rinha2.loadbalancer.server.port=3000"
+      - "traefik.enable=true"
+      - "traefik.http.routers.rinha.rule=Host(`localhost`)"
+      - "traefik.http.services.rinha.loadbalancer.server.port=3000"
     networks:
       scylla-net:
     deploy:
