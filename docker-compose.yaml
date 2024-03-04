@@ -1,6 +1,18 @@
 version: "3"
 
 services:
+  api:
+    image: fernandosvrosa/rinha:012d7a37e59866b98b0d04336512ed9350a2076e
+    container_name: rinha
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=scylla-net:9042
+    depends_on:
+      - scylla-node1
+    networks:
+      scylla-net:
+
   scylla-node1:
     image: scylladb/scylla
     restart: always

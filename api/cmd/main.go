@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/fernandosvrosa/rinha-backend/api/infra"
 	"github.com/gocql/gocql"
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +13,7 @@ import (
 func main() {
 
 	if err := godotenv.Load(); err != nil {
-		log.Fatal("No .env file found", err)
+		fmt.Println("No .env file found")
 	}
 
 	dbHost := os.Getenv("DB_HOST")
