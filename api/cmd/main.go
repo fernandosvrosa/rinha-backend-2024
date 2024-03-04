@@ -8,6 +8,7 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 	"os"
+	"strconv"
 )
 
 func main() {
@@ -23,7 +24,7 @@ func main() {
 	cluster.Keyspace = "rinha_db"
 	cluster.Consistency = gocql.Quorum
 
-	cluster.NumConns = connMax
+	cluster.NumConns, _ = strconv.Atoi(connMax)
 	cluster.PoolConfig.HostSelectionPolicy = gocql.TokenAwareHostPolicy(gocql.RoundRobinHostPolicy())
 
 	connManager := &infra.ConnectionManager{
