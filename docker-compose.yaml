@@ -1,17 +1,60 @@
 version: "3"
 
 services:
-  api:
-    image: fernandosvrosa/rinha:012d7a37e59866b98b0d04336512ed9350a2076e
-    container_name: rinha
+  api1:
+    image: fernandosvrosa/rinha:bb20917478c21b8ffe2da637d8ab877e8b43a643
+    container_name: rinha1
+    restart: always
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=scylla-net:9042
+      - DB_HOST=scylla-node1:9042
+      - NAME=rinha1
     depends_on:
       - scylla-node1
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.rinha1.rule=Host(`localhost`)"
+        - "traefik.http.services.rinha1.loadbalancer.server.port=3000"
     networks:
       scylla-net:
+
+  api2:
+    image: fernandosvrosa/rinha:bb20917478c21b8ffe2da637d8ab877e8b43a643
+    container_name: rinha2
+    restart: always
+    ports:
+      - "3001:3000"
+    environment:
+      - DB_HOST=scylla-node1:9042
+      - NAME=rinha2
+    depends_on:
+      - scylla-node1
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.rinha2.rule=Host(`localhost`)"
+        - "traefik.http.services.rinha2.loadbalancer.server.port=3001"
+    networks:
+      scylla-net:
+
+  traefik:
+    image: traefik:v2.2
+    container_name: traefik
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:9999"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+    ports:
+      - "9999:80"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+    networks:
+      scylla-net:
+
 
   scylla-node1:
     image: scylladb/scylla
