@@ -17,12 +17,13 @@ func main() {
 	}
 
 	dbHost := os.Getenv("DB_HOST")
+	connMax := os.Getenv("CONN_MAX")
 
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = "rinha_db"
 	cluster.Consistency = gocql.Quorum
 
-	cluster.NumConns = 10
+	cluster.NumConns = connMax
 	cluster.PoolConfig.HostSelectionPolicy = gocql.TokenAwareHostPolicy(gocql.RoundRobinHostPolicy())
 
 	connManager := &infra.ConnectionManager{

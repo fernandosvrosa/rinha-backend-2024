@@ -2,12 +2,12 @@ version: "3"
 
 services:
   api1:
-    image: fernandosvrosa/rinha:3723a1b16280dfac5054c6d913fc99a05588f61a
+    image: fernandosvrosa/rinha:26c433b8b275af887f64cca1789beb40d51a73bc
     container_name: rinha1
     restart: always
     environment:
       - DB_HOST=scylla-node1:9042
-      - NAME=rinha1
+      - CONN_MAX=20
     depends_on:
       - scylla-node1
     labels:
@@ -20,15 +20,15 @@ services:
       resources:
         limits:
           cpus: "0.3"
-          memory: "50MB"
+          memory: "90MB"
 
   api2:
-    image: fernandosvrosa/rinha:3723a1b16280dfac5054c6d913fc99a05588f61a
+    image: fernandosvrosa/rinha:26c433b8b275af887f64cca1789beb40d51a73bc
     container_name: rinha2
     restart: always
     environment:
       - DB_HOST=scylla-node1:9042
-      - NAME=rinha2
+      - CONN_MAX=20
     depends_on:
       - scylla-node1
     labels:
@@ -41,7 +41,7 @@ services:
       resources:
         limits:
           cpus: "0.3"
-          memory: "50MB"
+          memory: "90MB"
 
   traefik:
     image: traefik:v2.2
@@ -67,7 +67,7 @@ services:
       resources:
         limits:
           cpus: "0.3"
-          memory: "50MB"
+          memory: "70MB"
 
 
   scylla-node1:
@@ -78,14 +78,14 @@ services:
       - "9042:9042" # CQL native transport
       - "10000:10000" # Prometheus metrics
       - "9180:9180" # Internode HTTP communication
-    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 200M --overprovisioned 1 --api-address 0.0.0.0
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 150M --overprovisioned 1 --api-address 0.0.0.0
     networks:
       scylla-net:
     deploy:
       resources:
         limits:
           cpus: "0.3"
-          memory: "200MB"
+          memory: "150MB"
 
   scylla-node2:
     image: scylladb/scylla
@@ -95,14 +95,14 @@ services:
       - "9043:9042" # CQL native transport
       - "10001:10000" # Prometheus metrics
       - "9181:9180" # Internode HTTP communication
-    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 200M --overprovisioned 1 --api-address 0.0.0.0
+    command: --seeds=scylla-node1,scylla-node2 --smp 1 --memory 150M --overprovisioned 1 --api-address 0.0.0.0
     networks:
       scylla-net:
     deploy:
       resources:
         limits:
           cpus: "0.3"
-          memory: "200MB"
+          memory: "150MB"
 
 networks:
     scylla-net:
