@@ -20,20 +20,26 @@ func main() {
 
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = "rinha_db"
+	cluster.Consistency = gocql.Quorum
 
-	// Create a session
-	session, err := cluster.CreateSession()
-	if err != nil {
-		log.Fatal("Error creating session:", err)
+	cluster.NumConns = 10
+	cluster.PoolConfig.HostSelectionPolicy = gocql.TokenAwareHostPolicy(gocql.RoundRobinHostPolicy())
+
+	connManager := &infra.ConnectionManager{
+		Cluster: cluster,
 	}
-	defer session.Close()
+
+	if err := connManager.Connect(); err != nil {
+		log.Fatal("Erro ao conectar:", err)
+	}
+	defer connManager.Close()
 
 	app := fiber.New()
 
-	clientFactory := infra.NewClientFactory(session)
+	clientFactory := infra.NewClientFactory(connManager.Session)
 	clientHandler := clientFactory.CreateClientHandler()
 
-	transactionHistoryFactory := infra.NewTransactionHistoryFactory(session)
+	transactionHistoryFactory := infra.NewTransactionHistoryFactory(connManager.Session)
 	transactionHistoryHandler := transactionHistoryFactory.CreateTransactionHistoryHandler()
 
 	app.Post("/clientes/:id/transacoes", clientHandler.CreateTransaction)
